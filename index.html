@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamento de Unhas</title>
+
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Background elements for aesthetics -->
+    <div class="blob shape-1"></div>
+    <div class="blob shape-2"></div>
+
+    <div id="app">
+        <header class="app-header fade-in">
+            <div class="logo">
+                <h1>Duda Ponciano Nails</h1>
+            </div>
+            <p>Beleza nas pontinhas dos dedos</p>
+        </header>
+
+        <main class="glass-panel fade-in-up">
+
+            <!-- STEP 1: SERVICES -->
+            <section id="step-1" class="step active">
+                <div class="step-header">
+                    <span class="step-badge">1 / 3</span>
+                    <h2>Escolha o Serviço</h2>
+                </div>
+
+                <div class="services-list" id="services-container">
+                    <!-- Populated via JS -->
+                </div>
+            </section>
+
+            <!-- STEP 2: DATE & TIME -->
+            <section id="step-2" class="step">
+                <div class="step-header">
+                    <button class="back-btn" onclick="goToStep(1)"><i class="fa-solid fa-chevron-left"></i>
+                        Voltar</button>
+                    <span class="step-badge">2 / 3</span>
+                    <h2>Escolha seu Horário</h2>
+                </div>
+
+                <div class="date-selector">
+                    <h3>Data</h3>
+                    <div class="calendar-btn" onclick="toggleCalendar()" id="calendar-btn-label">
+                        <span>Selecione a Data</span> <i class="fa-solid fa-calendar-days"></i>
+                    </div>
+                    <div class="calendar-popup" id="calendar-popup">
+                        <div class="calendar-header">
+                            <button class="cal-nav-btn" onclick="prevMonth()"><i
+                                    class="fa-solid fa-chevron-left"></i></button>
+                            <div class="cal-month-year" id="cal-month-year">Mês Ano</div>
+                            <button class="cal-nav-btn" onclick="nextMonth()"><i
+                                    class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                        <div class="calendar-weekdays">
+                            <div>Dom</div>
+                            <div>Seg</div>
+                            <div>Ter</div>
+                            <div>Qua</div>
+                            <div>Qui</div>
+                            <div>Sex</div>
+                            <div>Sáb</div>
+                        </div>
+                        <div class="calendar-days-grid" id="calendar-days-grid">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="time-selector mt-4">
+                    <h3>Horários Disponíveis</h3>
+                    <div class="times-grid" id="times-container"></div>
+
+                    <div class="form-group mt-3">
+                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 4px;">Informe um horário de
+                            sua preferência e confirmamos pelo WhatsApp.</p>
+                        <input type="time" id="custom-time" oninput="selectCustomTime(this.value)">
+                    </div>
+                </div>
+
+                <button class="primary-btn mt-4 full-width" id="btn-next-step2" disabled onclick="goToStep(3)">
+                    Continuar <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            </section>
+
+            <!-- STEP 3: CONTACT INFO -->
+            <section id="step-3" class="step">
+                <div class="step-header">
+                    <button class="back-btn" onclick="goToStep(2)"><i class="fa-solid fa-chevron-left"></i>
+                        Voltar</button>
+                    <span class="step-badge">3 / 3</span>
+                    <h2>Seus Dados</h2>
+                </div>
+
+                <div class="summary-card">
+                    <h4>Resumo do Agendamento</h4>
+                    <p id="summary-service"><i class="fa-solid fa-check text-primary"></i> Serviço: <span>-</span></p>
+                    <p id="summary-datetime"><i class="fa-regular fa-clock text-primary"></i> Horário: <span>-</span>
+                    </p>
+                </div>S
+
+                <div class="form-group mt-4">
+                    <label for="client-name">Seu Nome</label>
+                    <input type="text" id="client-name" placeholder="Digite seu nome completo" oninput="validateForm()">
+                </div>
+
+                <div class="form-group mt-3">
+                    <label for="client-phone">WhatsApp</label>
+                    <input type="tel" id="client-phone" placeholder="(11) 99999-9999" oninput="validateForm()">
+                </div>
+
+                <button class="primary-btn mt-4 full-width" id="btn-finish" disabled onclick="finishBooking()">
+                    <i class="fa-brands fa-whatsapp mr-2"></i> Agendar via WhatsApp
+                </button>
+            </section>
+
+        </main>
+
+        <footer>
+            <p>&copy; 2026 Duda Ponciano Nails</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="main.js"></script>
+</body>
+
+</html>
