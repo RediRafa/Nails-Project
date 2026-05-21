@@ -5,10 +5,7 @@ const services = [
     { id: 3, name: "Manutenção 20 dias", duration: "2h", price: "R$ 90,00" },
     { id: 4, name: "Manutenção 15 dias", duration: "2h", price: "R$ 80,00" },
     { id: 5, name: "Esmaltação em gel", duration: "1h", price: "R$ 70,00" },
-    { id: 6, name: "Esmaltação comum", duration: "30 min", price: "R$ 30,00" },
-    { id: 7, name: "Recolocação de unha perdida", duration: "15 min", price: "R$ 10,00/cada" },
-    { id: 8, name: "Encapsuladas", duration: "15 min", price: "R$ 10,00/cada" },
-    { id: 9, name: "Nail Art", duration: "10 min", price: "R$ 10,00/cada" }
+    { id: 6, name: "Esmaltação comum", duration: "30 min", price: "R$ 30,00" }
 ];
 
 const availableTimes = ["09:00", "10:30", "13:00", "14:30", "16:00", "17:30"];
