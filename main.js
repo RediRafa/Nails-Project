@@ -16,7 +16,7 @@ const availableTimes = ["09:00", "10:30", "13:00", "14:30", "16:00", "17:30"];
 // State Management
 let state = {
     step: 1,
-    service: null,
+    services: [],
     date: null,
     time: null,
     name: "",
@@ -156,7 +156,7 @@ function getDurationMins(durationStr) {
 
 function renderTimes(busyTimes) {
     const container = document.getElementById('times-container');
-    const serviceDuration = state.service ? getDurationMins(state.service.duration) : 30;
+    const serviceDuration = state.services.length > 0 ? state.services.reduce((total, s) => total + getDurationMins(s.duration), 0) : 30;
 
     container.innerHTML = availableTimes.map(t => {
         const slotStartMins = timeToMins(t);
@@ -188,14 +188,22 @@ function renderTimes(busyTimes) {
 // ACTIONS
 function selectService(id) {
     const service = services.find(s => s.id === id);
-    state.service = service;
+    
+    // Toggle service in array
+    const index = state.services.findIndex(s => s.id === id);
+    if (index > -1) {
+        state.services.splice(index, 1);
+        document.getElementById(`service-${id}`).classList.remove('selected');
+    } else {
+        state.services.push(service);
+        document.getElementById(`service-${id}`).classList.add('selected');
+    }
 
-    // UI Update
-    document.querySelectorAll('.service-card').forEach(el => el.classList.remove('selected'));
-    document.getElementById(`service-${id}`).classList.add('selected');
-
-    // Automatically go to step 2 after brief delay
-    setTimeout(() => goToStep(2), 300);
+    // Enable/disable next button
+    const btnNext = document.getElementById('btn-next-step1');
+    if (btnNext) {
+        btnNext.disabled = state.services.length === 0;
+    }
 }
 
 function selectDate(dateStr, dayNumber) {
@@ -253,7 +261,27 @@ function goToStep(step) {
 
     // Update summary before going to step 3
     if (step === 3) {
-        document.querySelector('#summary-service span').textContent = `${state.service.name} (${state.service.price})`;
+        const serviceNames = state.services.map(s => s.name).join(' + ');
+        
+        let totalPrice = 0;
+        let hasVariablePrice = false;
+        
+        state.services.forEach(s => {
+            const match = s.price.match(/[\d,]+/);
+            if (match) {
+                totalPrice += parseFloat(match[0].replace(',', '.'));
+            }
+            if (s.price.includes('/cada') || s.price.includes('a partir')) {
+                hasVariablePrice = true;
+            }
+        });
+        
+        let priceDisplay = `R$ ${totalPrice.toFixed(2).replace('.', ',')}`;
+        if (hasVariablePrice) {
+            priceDisplay += ' (valor base)';
+        }
+
+        document.querySelector('#summary-service span').textContent = `${serviceNames} (${priceDisplay})`;
 
         // Format date BR
         const [year, month, day] = state.date.split('-');
@@ -295,10 +323,10 @@ async function finishBooking() {
         const payload = {
             name: state.name,
             phone: state.phone,
-            service: state.service.name,
+            service: state.services.map(s => s.name).join(', '),
             date: state.date,
             time: state.time,
-            duration: getDurationMins(state.service.duration)
+            duration: state.services.reduce((total, s) => total + getDurationMins(s.duration), 0)
         };
 
         // Envia os dados para o Google Apps Script (usando text/plain para evitar erro de CORS)
@@ -317,7 +345,8 @@ async function finishBooking() {
         btnFinish.disabled = false;
 
         // Abre o WhatsApp mesmo que dê erro no calendário, para não perder o agendamento
-        const message = `Olá Duda, tudo bem? Sou a ${state.name} e acabei de agendar um horário dia ${dateFormatted} as ${state.time} para realizar um serviço de ${state.service.name.toLowerCase()}.`;
+        const serviceNamesMsg = state.services.map(s => s.name).join(' e ');
+        const message = `Olá Duda, tudo bem? Sou a ${state.name} e acabei de agendar um horário dia ${dateFormatted} às ${state.time} para os serviços de: ${serviceNamesMsg}.`;
         const whatsappUrl = `https://wa.me/${phoneToMsg}?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, '_blank');
     }
